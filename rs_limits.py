@@ -38,6 +38,7 @@ def rs_preprocess(midware, environ):
         if klass:
             # We have our rate-limit group!
             environ['turnstile.nova.limitclass'] = klass
+            return
 
 
 def _group_class(config, group, klass=None, delete=False):
