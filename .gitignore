@@ -1,0 +1,4 @@
+/build
+/dist
+/rs_limits.egg-info
+*.pyc
