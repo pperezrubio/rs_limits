@@ -25,7 +25,13 @@ setup(
         ],
     url='https://github.com/klmitch/rs_limits',
     long_description=read('README.rst'),
+    entry_points={
+        'console_scripts': [
+            'group_class = rs_limits:group_class',
+            ],
+        },
     install_requires=[
+        'argparse',
         'nova_limits',
         'turnstile',
         ],
