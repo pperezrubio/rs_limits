@@ -24,16 +24,30 @@ def rs_preprocess(midware, environ):
     """
 
     # If we don't have the header, let nova_preprocess() do its magic.
-    groups = environ.get('HTTP_X_PP_GROUPS')
-    if not groups:
+    group_str = environ.get('HTTP_X_PP_GROUPS')
+    if not group_str:
         return
 
-    # Split the groups string into a list of groups
-    # XXX Note: assuming space-separated here
-    groups = groups.split()
+    # Split the groups string into a list of groups, respecting quality
+    groups = []
+    for group in group_str.split(','):
+        # Strip off any whitespace, just in case
+        group = group.strip()
+
+        # Convert quality, if present
+        quality = 1.0
+        name, _sep, qual_str = group.partition(';')
+        if qual_str.startswith('q='):
+            try:
+                quality = float(qual_str[2:])
+            except ValueError:
+                # Invalid float; use 1.0
+                pass
+
+        groups.append((name, quality))
 
     # Look up the rate-limit class from the database
-    for group in groups:
+    for group, _quality in sorted(groups, key=lambda x: x[1], reverse=True):
         klass = midware.db.get('rs-group:%s' % group)
         if klass:
             # We have our rate-limit group!
