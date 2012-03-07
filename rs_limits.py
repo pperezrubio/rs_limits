@@ -121,6 +121,11 @@ def group_class():
                         "the given group.")
 
     args = parser.parse_args()
+
+    # Don't allow --class and --delete to both be given
+    if args.klass and args.delete:
+        return "The --class and --delete options are mutually exclusive."
+
     try:
         klass = _group_class(args.config, args.group, args.klass, args.delete)
 
