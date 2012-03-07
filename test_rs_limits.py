@@ -223,7 +223,6 @@ class FakeArgumentParser(object):
 
 class TestToolGroupClass(unittest.TestCase):
     def setUp(self):
-        self.fake_db = FakeDatabase()
         self.stubs = stubout.StubOutForTesting()
 
         self.group_class_result = None
