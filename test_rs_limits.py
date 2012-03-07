@@ -164,6 +164,19 @@ class TestGroupClass(unittest.TestCase):
                 ])
         self.assertEqual(old_klass, None)
 
+    def test_set_unchanged(self):
+        self.fake_db.fake_db['rs-group:grp1'] = 'lim_class'
+        old_klass = rs_limits._group_class('config_file', 'grp1',
+                                           klass='lim_class')
+
+        self.assertEqual(self.fake_db.fake_db, {
+                'rs-group:grp1': 'lim_class',
+                })
+        self.assertEqual(self.fake_db.actions, [
+                ('get', 'rs-group:grp1'),
+                ])
+        self.assertEqual(old_klass, 'lim_class')
+
     def test_delete(self):
         self.fake_db.fake_db['rs-group:grp1'] = 'old_class'
         old_klass = rs_limits._group_class('config_file', 'grp1', delete=True)
