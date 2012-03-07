@@ -77,7 +77,7 @@ def _group_class(config, group, klass=None, delete=False):
     key = 'rs-group:%s' % group
 
     # Now, look up the tenant's current class
-    old_klass = midware.db.get(key)
+    old_klass = db.get(key)
 
     # Do we need to delete it?  Change it?
     if delete:
