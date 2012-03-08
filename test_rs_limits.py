@@ -272,7 +272,7 @@ class TestToolGroupClass(unittest.TestCase):
         self.args_dict['debug'] = True
         self.group_class_result = AnException("foobar")
         with self.assertRaises(AnException):
-            result = rs_limits.group_class()
+            rs_limits.group_class()
         self.assertEqual(self.stdout.getvalue(), '')
 
     def test_report(self):
