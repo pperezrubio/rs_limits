@@ -8,14 +8,14 @@ def read(fname):
 
 setup(
     name='rs_limits',
-    version='0.1',
+    version='0.5',
     author='Kevin L. Mitchell',
     author_email='kevin.mitchell@rackspace.com',
     description="Rackspace-specific rate-limit preprocessor for turnstile",
     license='Apache License (2.0)',
     py_modules=['rs_limits'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Paste',
         'Intended Audience :: System Administrators',
@@ -34,5 +34,8 @@ setup(
         'argparse',
         'nova_limits',
         'turnstile',
+        ],
+    tests_require=[
+        'mox',
         ],
     )
