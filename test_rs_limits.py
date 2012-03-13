@@ -33,6 +33,12 @@ class FakeMiddleware(object):
         self.db = db
 
 
+class FakeContext(object):
+    def __init__(self, setup_quota_class=False):
+        if setup_quota_class:
+            self.quota_class = None
+
+
 class TestPreprocess(unittest.TestCase):
     def test_nogroups(self):
         db = FakeDatabase()
@@ -90,7 +96,6 @@ class TestPreprocess(unittest.TestCase):
             )
         rs_limits.rs_preprocess(midware, environ)
 
-        print db.fake_db
         self.assertEqual(environ, {
                 'HTTP_X_PP_GROUPS': 'grp1,grp2,grp3,grp4,grp5',
                 'turnstile.nova.limitclass': 'lim_class',
@@ -100,6 +105,43 @@ class TestPreprocess(unittest.TestCase):
                 ('get', 'rs-group:grp2'),
                 ('get', 'rs-group:grp3'),
                 ])
+
+    def test_group_context_no_quota_class(self):
+        db = FakeDatabase({'rs-group:grp3': 'lim_class'})
+        midware = FakeMiddleware(db)
+        context = FakeContext()
+        environ = {
+            'HTTP_X_PP_GROUPS': 'grp1,grp2,grp3,grp4,grp5',
+            'nova.context': context,
+            }
+        rs_limits.rs_preprocess(midware, environ)
+
+        self.assertEqual(environ['turnstile.nova.limitclass'], 'lim_class')
+        self.assertEqual(db.actions, [
+                ('get', 'rs-group:grp1'),
+                ('get', 'rs-group:grp2'),
+                ('get', 'rs-group:grp3'),
+                ])
+        self.assertFalse(hasattr(context, 'quota_class'))
+
+    def test_group_context(self):
+        db = FakeDatabase({'rs-group:grp3': 'lim_class'})
+        midware = FakeMiddleware(db)
+        context = FakeContext(True)
+        environ = {
+            'HTTP_X_PP_GROUPS': 'grp1,grp2,grp3,grp4,grp5',
+            'nova.context': context,
+            }
+        rs_limits.rs_preprocess(midware, environ)
+
+        self.assertEqual(environ['turnstile.nova.limitclass'], 'lim_class')
+        self.assertEqual(db.actions, [
+                ('get', 'rs-group:grp1'),
+                ('get', 'rs-group:grp2'),
+                ('get', 'rs-group:grp3'),
+                ])
+        self.assertTrue(hasattr(context, 'quota_class'))
+        self.assertEqual(context.quota_class, 'lim_class')
 
 
 class TestGroupClass(unittest.TestCase):

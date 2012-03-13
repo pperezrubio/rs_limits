@@ -28,6 +28,13 @@ def rs_preprocess(midware, environ):
     if not group_str:
         return
 
+    # We'll need the nova context
+    context = environ.get('nova.context')
+    if context and not hasattr(context, 'quota_class'):
+        # If the context doesn't have quota_class, then don't activate
+        # the quota_class part of the algorithm...
+        context = None
+
     # Split the groups string into a list of groups, respecting quality
     groups = []
     for group in group_str.split(','):
@@ -52,6 +59,12 @@ def rs_preprocess(midware, environ):
         if klass:
             # We have our rate-limit group!
             environ['turnstile.nova.limitclass'] = klass
+
+            # If we have a context that supports it, set the quota
+            # class
+            if context:
+                context.quota_class = klass
+
             return
 
 

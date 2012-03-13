@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name='rs_limits',
-    version='0.5',
+    version='0.5.1',
     author='Kevin L. Mitchell',
     author_email='kevin.mitchell@rackspace.com',
     description="Rackspace-specific rate-limit preprocessor for turnstile",
