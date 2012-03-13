@@ -1,0 +1,19 @@
+Source: rs-limits
+Section: python
+Priority: extra
+Maintainer: Major Hayden <major.hayden@rackspace.com>
+Build-Depends: debhelper (>= 7.0.50)
+Build-Depends-Indep: python-support, python-setuptools
+Standards-Version: 3.9.1
+
+Package: python-rs-limits
+Architecture: all
+Section: python
+Depends: ${python:Depends}, 
+  ${misc:Depends}, 
+  python-argparse, 
+  python-nova-limits,
+  python-turnstile
+XB-Python-Version: ${python:Versions}
+Provides: ${python:Provides}
+Description: Rackspace-specific Rate Limit Preprocessor for Turnstile
